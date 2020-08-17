@@ -21,7 +21,7 @@ public class ShortenerServiceImpl implements ShortenerService {
     @Override
     public String getUrl(String name) {
         return shortenerRepository.findByName(name)
-                .map(shortenerEntity -> shortenerEntity.name)
+                .map(shortenerEntity -> shortenerEntity.url)
                 .orElse(null);
     }
     
