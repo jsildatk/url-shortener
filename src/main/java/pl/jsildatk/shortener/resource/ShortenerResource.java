@@ -1,10 +1,13 @@
 package pl.jsildatk.shortener.resource;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.http.HttpServerRequest;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import pl.jsildatk.shortener.dto.ShortenerDTO;
+import pl.jsildatk.shortener.dto.SuccessfulResponse;
 import pl.jsildatk.shortener.service.ShortenerService;
 
 import javax.inject.Inject;
@@ -21,7 +24,7 @@ import static pl.jsildatk.shortener.service.ShortenerService.REDIRECT_TO_URL_PAT
 @Path("/api")
 public class ShortenerResource {
     
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     
     @Inject
     ShortenerService shortenerService;
@@ -56,7 +59,7 @@ public class ShortenerResource {
         if ( wasSaved ) {
             return Response.status(201)
                     .entity(OBJECT_MAPPER.writeValueAsString(
-                            "Shortener has been created! Your link: " + request.host() + "/" + shortenerDTO.getName()))
+                            new SuccessfulResponse("Shortener has been created!", request.host() + "/api/" + shortenerDTO.getName())))
                     .build();
         }
         return Response.status(400)
